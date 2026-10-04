@@ -211,8 +211,8 @@ Experience changes the support you get, not your ownership of decisions:
 
 Everyone reasons first. Claude adapts to what you demonstrate and how familiar you
 are with the stack. How often Claude stops (Light, Normal or Frequent) is a separate
-setting in `teaching.md`. To change any setting, say so; Claude edits `teaching.md`
-and asks you to save the change.
+setting in `teaching.md`. To change any setting, say so; Claude shows the change
+and asks you to save it before editing `teaching.md`.
 
 - “Switch to Practice first.”
 - “Use fewer checkpoints.”
@@ -221,7 +221,7 @@ and asks you to save the change.
 - “Just implement this one.”
 - “Pause learning.” Resume with `/learning:learn`.
 
-Your `teaching.md`, learning notes, and a project map live in `.learning/` in your project. Projects set up with an older version keep their `.vibe-wise/` or `.sensible-vibes/` folder; the next `/learning:learn` asks only the new questions. Learning mode resumes in future sessions and after compaction. Add `.learning/` to your `.gitignore` to keep your notes out of Git; the plugin won't change it silently.
+Your `teaching.md`, learning notes, and a project map live in `.learning/` in your project. Projects set up with an older version keep their `.vibe-wise/` or `.sensible-vibes/` folder; the first session after updating (or `/learning:learn`) walks you through setup rounds 3–6, with your old answers pre-selected. Learning mode resumes in future sessions and after compaction. Add `.learning/` to your `.gitignore` to keep your notes out of Git; the plugin won't change it silently.
 
 No extra account, backend, or telemetry. Saved notes are included in Claude's context, so your normal Claude Code data settings still apply.
 
@@ -242,6 +242,8 @@ claude plugin update learning@learning
 ```
 
 Then restart Claude Code. Your project learning notes stay intact; no reset is needed.
+Projects set up before 0.2.0 go through setup rounds 3–6 once, in their first session
+after the update.
 Run `claude plugin list` to check the installed version.
 [More about plugin updates](https://code.claude.com/docs/en/discover-plugins#keep-plugins-updated).
 

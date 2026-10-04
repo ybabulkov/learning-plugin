@@ -8,8 +8,10 @@ are paraphrased examples; Claude's wording and question order will vary.
 
 Install the plugin using the README instructions. Open a new, empty folder in your
 terminal and start `claude`, then enter `/learning:learn`. Choose **New project**,
-describe a Notion-style notes app, choose **Beginner**, then **Use defaults**.
-Stack familiarity can wait until you choose a stack. No `git init` is needed.
+describe a Notion-style notes app, choose **Beginner**, then pick **Design first**
+and answer the remaining rounds, or say “skip” to take the defaults. For stack
+familiarity, choose **No stack yet**. Choose **Save** when `teaching.md` is shown.
+No `git init` is needed.
 
 Use these responses when the relevant question comes up. Follow the actual
 conversation rather than pasting the entire script. Ask for clarification whenever

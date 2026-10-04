@@ -186,7 +186,7 @@ For a manual walkthrough based on the playground notes app, see the
     `teaching.md` by hand and restart: Claude must show it and ask Use it / Ignore
     it before following it. Copy a project with its `.learning/` folder to a new
     path and confirm the same question appears there. Ask mid-project for fewer
-    stops: Claude edits `teaching.md`, shows the change and asks Save / Discard.
+    stops: Claude shows the change and asks Save / Discard before writing `teaching.md`.
     Open a project set up by an older version (profile with Goals and Preferences,
     no `teaching.md`): only rounds 3–6 are asked, pre-filled from the old answers.
 
