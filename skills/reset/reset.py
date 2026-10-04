@@ -20,12 +20,15 @@ FRESH = {
     "profile.md": (
         "# Learner Profile\n\nLearning mode: active\nOnboarding: incomplete\n"
         "Onboarding reset: pending\n\n"
-        "Remaining onboarding: Project situation, experience, stack familiarity, "
-        "goals, and preferences.\n"
+        "Remaining setup: rounds 1-6 (project, you, learning loop, style, "
+        "support, review).\n"
     ),
     "progress.md": "# Learning Progress\n\nNo learning events recorded yet.\n",
     "project-map.md": "# Project Map\n\nNot mapped yet. Inspect the current project.\n",
 }
+# Backed up, then removed instead of replaced, so setup asks every round again.
+REMOVED = ("teaching.md",)
+NOTES = (*FRESH, *REMOVED)
 
 
 def snapshot(cwd):
@@ -33,7 +36,7 @@ def snapshot(cwd):
     if state is None:
         return None, {}, None
     notes = {}
-    for name in FRESH:
+    for name in NOTES:
         path = state / name
         try:
             mode = path.lstat().st_mode
@@ -45,7 +48,7 @@ def snapshot(cwd):
     # Include identity, missing files, and content so confirmation cannot drift
     # to another project or silently discard notes updated by another session.
     digest = hashlib.sha256(str(state).encode())
-    for name in FRESH:
+    for name in NOTES:
         data = notes.get(name)
         digest.update(json.dumps([name, None if data is None else data.hex()]).encode())
     return state, notes, digest.hexdigest()
@@ -85,6 +88,9 @@ def reset(cwd, confirmation=None):
             raise ValueError("Notes changed during backup; active notes were not reset.")
         for name in FRESH:
             os.replace(backup / (".new-" + name), state / name)
+        for name in REMOVED:
+            if name in notes:
+                (state / name).unlink()
     except (OSError, ValueError) as error:
         raise ValueError(
             "Reset did not complete. Backup location: {}. "

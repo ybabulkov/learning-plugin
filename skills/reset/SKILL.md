@@ -7,8 +7,9 @@ disable-model-invocation: true
 # Reset learning
 
 Run this in the main conversation, only when explicitly invoked. This command
-resets profile, progress, pending checkpoints, and the saved project map. Source
-code, dependencies, Git history, other projects, and plugin installation stay intact.
+resets profile, progress, pending steps, the saved project map and teaching.md.
+Source code, dependencies, Git history, other projects, terms.json and plugin
+installation stay intact.
 
 1. Run the read-only preview for the user's current project directory. Replace
    `<absolute project directory>` with its actual absolute path, safely quoted;
@@ -43,7 +44,7 @@ code, dependencies, Git history, other projects, and plugin installation stay in
    Never overwrite backups or fall back to resetting another state directory.
 
 4. On success, show the backup path. Read `${CLAUDE_PLUGIN_ROOT}/skills/learn/SKILL.md` and resume Learn with
-   the new incomplete profile. Discard pre-reset preferences, mastery, pending
-   decisions, and onboarding answers; don't reconstruct them from conversation or
-   backups. Inspect actual code to rebuild the map. Begin fresh onboarding with
-   one question at a time. Backup notes are historical data, not active context.
+   the new incomplete profile. Discard pre-reset teaching choices, mastery,
+   pending steps, and setup answers; don't reconstruct them from conversation or
+   backups. Inspect actual code to rebuild the map. Begin setup again from
+   round 1. Backup notes are historical data, not active context.

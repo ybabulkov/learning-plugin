@@ -228,6 +228,33 @@ class ResetTests(unittest.TestCase):
         self.assertEqual(len(backups), 1)
         self.assert_originals(backups[0], originals)
 
+    def test_reset_backs_up_and_removes_teaching(self):
+        state, _ = self.notes()
+        (state / "teaching.md").write_bytes(b"# How to teach me in this project\n")
+        backup = Path(self.confirm()["backup"])
+        self.assertEqual((backup / "teaching.md").read_bytes(),
+                         b"# How to teach me in this project\n")
+        self.assertFalse((state / "teaching.md").exists())
+        self.assertIn("Remaining setup: rounds 1-6", (state / "profile.md").read_text())
+
+    def test_teaching_change_between_preview_and_confirm_blocks_reset(self):
+        state, originals = self.notes()
+        (state / "teaching.md").write_text("v1")
+        preview = self.preview()
+        self.assertIn("teaching.md", preview["files"])
+        (state / "teaching.md").write_text("v2")
+        with self.assertRaises(ValueError):
+            reset_module.reset(self.project, preview["confirmation"])
+        self.assertEqual((state / "teaching.md").read_text(), "v2")
+        self.assert_originals(state, originals)
+
+    def test_symlinked_teaching_blocks_reset(self):
+        state, originals = self.notes()
+        (state / "teaching.md").symlink_to(self.root / "elsewhere.md")
+        with self.assertRaises(ValueError):
+            self.preview()
+        self.assert_originals(state, originals)
+
 
 if __name__ == "__main__":
     unittest.main()
