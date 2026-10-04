@@ -8,15 +8,30 @@ A Claude Code plugin that puts learning first and keeps you in control while AI 
 
 For anyone who wants to learn as they build—whether you're an aspiring engineer, a junior developer, or an experienced engineer exploring an unfamiliar stack. Practice planning how the pieces fit together, anticipating failures, and checking the result while keeping ownership of the decisions.
 
-## Fork additions: term tooltips and quizzes
+## One setup per project
 
-This fork (branch `terms-and-quizzes`, marketplace `learning`) adds:
+How you want to learn depends on what you're learning. The first time you run
+`/learning:learn` in a project, it asks how you want to learn there and writes your
+answers to `.learning/teaching.md`:
 
-- **Hover tooltips in HTML explanations.** Terms and language syntax in code panels and captions get a dotted underline; hover, focus or tap shows the explanation. `skills/learn/assets/term-tooltips.js` is inlined into each page.
-- **A showing limit.** Each term is explained on at most 3 pages, tracked in `.learning/terms.json` by `skills/learn/terms.py`.
-- **Spaced-repetition quizzes** on terms already shown: at session start (the SessionStart hook reports how many are due) and after every second explainer page. A right answer schedules the next quiz in 1, 3, 7, 21, then 60 days; a miss resets to 1 day.
+- **Learning loop.** *Design first*: you plan and approve, Claude writes the code and
+  explains it. *Practice first*: Claude explains, you write a small exercise, Claude
+  reviews it. *Read first*: you explain real code, then change it together. If none
+  fits, Claude drafts a custom loop for you to adjust.
+- **Style.** How to explain (example, concept or diagram first), how often to stop,
+  open-ended or multiple-choice questions, and who writes the code.
+- **Support.** What helps when you're stuck, which terms get explained, and when to
+  quiz you.
 
-Rules for Claude live in `skills/learn/terms.md`.
+The core rules are the same in every project: you make the design decisions, and
+Claude writes code only after you approve that step. You can edit `teaching.md`
+yourself or ask Claude to change it. Claude follows a `teaching.md` only after you
+approve its exact content, so a repository you clone can't bring its own.
+
+HTML explanations get hover tooltips for terms and syntax. Each term is explained on
+at most 3 pages, tracked in `.learning/terms.json`, then joins spaced-repetition
+quizzes: a right answer schedules the next one in 1, 3, 7, 21, then 60 days; a miss
+resets it to 1 day.
 
 ## Get started
 
@@ -43,7 +58,7 @@ Restart Claude Code in the project you want to work on, then run:
 /learning:learn
 ```
 
-Setup asks one question at a time. Use the arrow keys and Enter for choices; pick **Use defaults** to skip preference setup. Then ask Claude to build something. Starting fresh or joining an unfamiliar repository both work. For an existing repository, Claude first inspects the code and sketches a small system map.
+Setup takes about seven screens, with up to four questions on each. Use the arrow keys and Enter for choices, and say “skip” to take the defaults for anything left. At the end you see your `teaching.md` and choose **Save** or **Change something**. Then ask Claude to build something. For an existing repository, Claude first inspects the code and sketches a small system map.
 
 ## What it feels like
 
@@ -51,8 +66,9 @@ You're building a Notion-style notes app: users sign in, create and edit private
 notes, and organize them into folders. Here, you're working through how notes and
 folders relate—and what should happen when someone deletes a folder.
 
-This condensed example is adapted from a real learning session. Later implementation
-steps are illustrative; intervening design discussions are omitted.
+This condensed example is adapted from a real learning session and uses the
+*Design first* loop. Later implementation steps are illustrative; intervening
+design discussions are omitted.
 
 **You:**
 
@@ -194,23 +210,27 @@ Experience changes the support you get, not your ownership of decisions:
 | Advanced | Probe difficult constraints, failure modes, and design assumptions. |
 
 Everyone reasons first. Claude adapts to what you demonstrate and how familiar you
-are with the stack. Checkpoint frequency—Light, Normal, or Frequent—is separate.
+are with the stack. How often Claude stops (Light, Normal or Frequent) is a separate
+setting in `teaching.md`. To change any setting, say so; Claude edits `teaching.md`
+and asks you to save the change.
 
+- “Switch to Practice first.”
 - “Use fewer checkpoints.”
 - “Focus on backend architecture.”
 - “Use multiple-choice questions.”
 - “Just implement this one.”
 - “Pause learning.” Resume with `/learning:learn`.
 
-Preferences, learning notes, and a project map live in `.learning/` in your project. Learning mode resumes in future sessions and after compaction. Add `.learning/` to your `.gitignore` to keep your notes out of Git; the plugin won't change it silently.
+Your `teaching.md`, learning notes, and a project map live in `.learning/` in your project. Projects set up with an older version keep their `.vibe-wise/` or `.sensible-vibes/` folder; the next `/learning:learn` asks only the new questions. Learning mode resumes in future sessions and after compaction. Add `.learning/` to your `.gitignore` to keep your notes out of Git; the plugin won't change it silently.
 
 No extra account, backend, or telemetry. Saved notes are included in Claude's context, so your normal Claude Code data settings still apply.
 
 To start learning this project from scratch, run `/learning:reset`. It shows the
 project and asks **Cancel / Reset learning**. After confirmation, it backs up your
-profile, progress, and project map inside the notes directory's `backups/` folder,
-then restarts onboarding. Source code and other projects stay untouched. To change
-your experience level or preferences, just tell Claude; no reset is needed.
+profile, progress, project map, and `teaching.md` inside the notes directory's
+`backups/` folder, then starts setup again. Source code and other projects stay
+untouched. To change your experience level or how you're taught, just tell Claude;
+no reset is needed.
 
 ## Updating
 

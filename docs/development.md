@@ -26,6 +26,11 @@ Reset tests cover read-only preview, confirmed backup/reset, stale confirmation,
 legacy and partial notes, nested projects, repeated backups, rejected symlinks,
 backup/write failures, and restoring incomplete onboarding after reset.
 
+Teaching tests cover approval, edits, symlinks, unreadable or misplaced approval
+files, moved projects, a missing home folder, and each session-start branch.
+Guide tests pin the `teaching.md` headings, the loop presets' rules, the core
+sections, the setup questions, and links between guides.
+
 ## Conversation smoke tests
 
 Use an authenticated Claude Code session and temporary copies of projects.
@@ -34,12 +39,15 @@ Launch with `claude --plugin-dir /absolute/path/to/your/clone`.
 For a manual walkthrough based on the playground notes app, see the
 [Notion-style demo](demos/notion-dupe.md).
 
-1. **Fresh project:** Run `/learning:learn`. Choose a new project, describe
-   a small CLI, and accept preference defaults. Check that all three state files
-   are created, the map separates proposed from implemented components, and no
-   understanding is marked demonstrated without evidence. Choice questions must
-   use native pickers with one question per screen; no questionnaire dump or
-   failed shell check for a missing state directory.
+1. **Fresh project:** Run `/learning:learn`. Choose a new project and describe
+   a small CLI. Check that setup runs six rounds in about seven screens, with up
+   to four picker questions per screen and open answers in chat; that the loop
+   picker marks one preset (Recommended) from your learning goal; and that round 6
+   shows the full `teaching.md` before **Save**. After saving, `teaching.md`,
+   `profile.md`, `progress.md` and `project-map.md` exist, `teaching.py check`
+   reports `approved`, the map separates proposed from implemented components,
+   and no understanding is marked demonstrated without evidence. No failed shell
+   check for a missing state directory.
 2. **Existing unfamiliar repository:** Use a separate copy of a real repository.
    Choose the existing-repository flow. Confirm Claude reads actual entry points
    and configuration, gives an accurate short map before familiarity questions,
@@ -97,7 +105,7 @@ For a manual walkthrough based on the playground notes app, see the
    and proposed additions. Every title keeps one leading `✦`
    and its full label in sentence case, followed by a colon, without emojis
    (for example, `✦ Build checkpoint: <description>`). Use native pickers for
-   onboarding and confirmations, with no trailing paragraphs obscuring the response point.
+   setup and approvals, with no trailing paragraphs obscuring the response point.
    Reasoning questions should be open-ended in chat, not in a picker or its notes field.
 9. **Clarification without steering:** Ask about an unfamiliar concept mid-decision.
    Claude should clarify it, correct any misleading framing, and return to one
@@ -118,7 +126,7 @@ For a manual walkthrough based on the playground notes app, see the
     before suggestions. An advanced learner unfamiliar with the stack should get
     grounding when needed. Existing Some experience / Comfortable profiles should
     resume with intermediate guidance, without rewriting history or re-onboarding.
-    Experience must not change the saved checkpoint frequency.
+    Experience must not change the saved Pace in `teaching.md`.
 
 12. **Evaluation and concise confirmation:** Give a confident but flawed proposal;
     Claude should name the violated constraint rather than praise confidence.
@@ -132,8 +140,8 @@ For a manual walkthrough based on the playground notes app, see the
     `/learning:reset`. Confirm it shows the absolute project and state paths and
     asks Cancel / Reset learning. Cancel must leave all files unchanged. Invoke
     again and confirm: original notes must exist in the reported backup, the
-    active profile must be incomplete, and onboarding must ask fresh questions
-    rather than reuse old preferences. Repeat with legacy notes and after restart.
+    active profile must be incomplete, `teaching.md` must be gone (its original in
+    the backup), and setup must start again at round 1 rather than reuse old answers. Repeat with legacy notes and after restart.
     If notes change during confirmation, Claude must preview and confirm again.
 
 14. **Requirements versus design:** Give a product requirement without proposing
@@ -170,6 +178,17 @@ For a manual walkthrough based on the playground notes app, see the
     them toward a predetermined answer. Confirm a narrowly worded proposal, then
     inspect the notes: unmentioned fields, lifecycle behavior, alternatives, and
     rationale must remain unresolved, not appear as agreed design or learner reasoning.
+17. **Per-project teaching:** Set up two projects with different loops (for
+    example Practice first and Design first) and confirm each follows its own
+    steps and step names, while both still wait for a `[gate]` approval before
+    Claude writes code. Choose Suggest one for me and confirm the drafted loop has
+    unique step names and a gate before any step where Claude writes code. Edit
+    `teaching.md` by hand and restart: Claude must show it and ask Use it / Ignore
+    it before following it. Copy a project with its `.learning/` folder to a new
+    path and confirm the same question appears there. Ask mid-project for fewer
+    stops: Claude edits `teaching.md`, shows the change and asks Save / Discard.
+    Open a project set up by an older version (profile with Goals and Preferences,
+    no `teaching.md`): only rounds 3–6 are asked, pre-filled from the old answers.
 
 Do not commit `.learning/` or test transcripts. The plugin recommends an
 ignore rule during onboarding, but changes `.gitignore` only after telling the
