@@ -88,5 +88,54 @@ class CoreTests(unittest.TestCase):
         self.assertIn("this file wins", text)
 
 
+QUESTIONS = [
+    "What are we doing?",
+    "What do you want to learn in this project?",
+    "How do you want to learn in this project?",
+    "How should I explain new things?",
+    "How often should I stop you?",
+    "How should I ask you questions?",
+    "Who writes the code?",
+    "When you're stuck, what helps most?",
+    "Which terms should I explain?",
+    "When should I quiz you?",
+]
+ROUNDS = ["Project", "You", "Learning loop", "Style", "Support", "Review"]
+
+
+class SkillTests(unittest.TestCase):
+    def test_setup_has_six_rounds_and_every_question(self):
+        text = read("SKILL.md")
+        for number, name in enumerate(ROUNDS, 1):
+            self.assertIn(f"### Round {number}: {name}", text)
+        for question in QUESTIONS:
+            with self.subTest(question=question):
+                self.assertIn(question, text)
+
+    def test_skill_uses_the_approval_helper(self):
+        text = read("SKILL.md")
+        self.assertIn("teaching.py' approve --state", text)
+        self.assertIn("teaching.py' check --state", text)
+
+    def test_relative_links_in_skills_resolve(self):
+        for guide in (ROOT / "skills").rglob("*.md"):
+            for target in re.findall(r"\]\(([^)#:]+\.md)\)", guide.read_text(encoding="utf-8")):
+                with self.subTest(guide=str(guide.relative_to(ROOT)), target=target):
+                    self.assertTrue((guide.parent / target).is_file())
+
+    def test_removed_guides_are_gone_and_unreferenced(self):
+        for gone in ("behavior.md", "onboarding.md"):
+            self.assertFalse((LEARN / gone).exists())
+        paths = [*(ROOT / "skills").rglob("*.md"), *(ROOT / "skills").rglob("*.py"),
+                 *(ROOT / "hooks").rglob("*.py"), ROOT / "README.md"]
+        for path in paths:
+            text = path.read_text(encoding="utf-8")
+            for gone in ("behavior.md", "onboarding.md"):
+                with self.subTest(path=str(path.relative_to(ROOT)), gone=gone):
+                    self.assertNotIn(gone, text)
+        # Term scope now lives in teaching.md; terms.md must not send Claude elsewhere.
+        self.assertNotIn("term-scope.md", read("terms.md"))
+
+
 if __name__ == "__main__":
     unittest.main()
