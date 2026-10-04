@@ -108,7 +108,7 @@ learner's words.]
 
 ## Learning loop
 [Preset name, or Custom]
-[Numbered steps copied from the chosen preset below, or the custom loop]
+[Numbered steps and the notes under them, copied from the chosen preset below, or the custom loop]
 Repeat for each [piece / concept / area].
 
 ## Explaining

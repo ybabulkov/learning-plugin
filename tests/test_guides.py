@@ -10,6 +10,7 @@ LEARN = ROOT / "skills/learn"
 HEADINGS = ["What I'm learning", "Learning loop", "Explaining", "Pace", "Questions",
             "Who writes the code", "When I'm stuck", "Terms", "Quizzes"]
 STEP = re.compile(r"^(\d+)\. (.+?) \((learner|Claude)\)( \[gate\])?: (.+)$")
+CODE_WORK = re.compile(r"\b(write|writes|writing|code|implement\w*|change[sd]?)\b", re.I)
 PRESETS = ("Design first", "Practice first", "Read first")
 
 
@@ -32,7 +33,15 @@ def preset(name):
                       read("state-templates.md"), re.M | re.S)
     if not match:
         raise AssertionError(f"no preset {name}")
-    return [m for m in map(STEP.match, match.group(1).splitlines()) if m]
+    steps = []
+    for line in match.group(1).splitlines():
+        if not re.match(r"\d+\.", line):
+            continue
+        step = STEP.match(line)
+        if not step:
+            raise AssertionError(f"{name}: malformed step line: {line}")
+        steps.append(step)
+    return steps
 
 
 class TemplateTests(unittest.TestCase):
@@ -53,7 +62,7 @@ class TemplateTests(unittest.TestCase):
                 gates = [i for i, s in enumerate(steps) if s.group(4)]
                 self.assertTrue(gates, "every preset needs a [gate] step")
                 for i, s in enumerate(steps):
-                    if s.group(3) == "Claude" and s.group(2).startswith("Write"):
+                    if s.group(3) == "Claude" and CODE_WORK.search(s.group(2) + " " + s.group(5)):
                         self.assertGreater(i, gates[0], f"{s.group(2)} before the gate")
 
     def test_profile_template_no_longer_holds_preferences(self):
