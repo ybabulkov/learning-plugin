@@ -58,9 +58,9 @@ def load_approvals(path):
 def check(state):
     """'approved', 'unapproved' or 'missing'. Anything unknown counts as unapproved."""
     teaching = Path(state) / FILENAME
-    if not teaching.exists() and not teaching.is_symlink():
-        return "missing"
     try:
+        if not teaching.exists() and not teaching.is_symlink():
+            return "missing"
         if teaching.is_symlink() or not teaching.is_file():
             return "unapproved"
         approved = load_approvals(approvals_path()).get(teaching_key(state))

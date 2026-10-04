@@ -105,6 +105,22 @@ class ApprovalTests(unittest.TestCase):
         self.assertEqual(outside.read_text(), "{}")
         self.assertEqual(teaching.check(self.state), "unapproved")
 
+    def test_symlinked_approvals_file_is_not_followed_when_checking(self):
+        self.write()
+        outside = self.root / "outside.json"
+        key = str(self.state / "teaching.md")
+        outside.write_text(json.dumps({key: teaching.fingerprint(key)}))
+        self.approvals.parent.mkdir(parents=True)
+        self.approvals.symlink_to(outside)
+        self.assertEqual(teaching.check(self.state), "unapproved")
+
+    @unittest.skipIf(os.geteuid() == 0, "root ignores folder permissions")
+    def test_check_never_raises_when_the_project_folder_is_unsearchable(self):
+        self.write()
+        self.project.chmod(0o000)
+        self.addCleanup(self.project.chmod, 0o700)
+        self.assertEqual(teaching.check(self.state), "unapproved")
+
     def test_unreadable_approvals_mean_unapproved_and_approve_rewrites_them(self):
         self.write()
         self.approvals.parent.mkdir(parents=True)
