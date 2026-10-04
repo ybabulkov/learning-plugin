@@ -8,9 +8,14 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "skills/learn"))
+import teaching  # noqa: E402
+
+TEACHING = "# How to teach me in this project\n## Learning loop\nPrivate loop text\n"
 CONFIG = json.loads((ROOT / "hooks/hooks.json").read_text())
 REGISTRATION = CONFIG["hooks"]["SessionStart"][0]
 
@@ -23,8 +28,9 @@ class SessionStartTests(unittest.TestCase):
         self.project = self.root / "project with spaces"
         self.project.mkdir()
         (self.project / ".git").mkdir()
+        self.config = self.root / "config"
 
-    def state(self, project=None, mode="active"):
+    def state(self, project=None, mode="active", teaching_file=None):
         directory = (project or self.project) / ".learning"
         directory.mkdir()
         (directory / "profile.md").write_text(
@@ -41,22 +47,30 @@ class SessionStartTests(unittest.TestCase):
             "Demonstrated understanding: two writes must succeed together.\n"
             "## Queues\nNeeds reinforcement: retries.\n", encoding="utf-8"
         )
+        if teaching_file:
+            (directory / "teaching.md").write_text(TEACHING, encoding="utf-8")
+            if teaching_file == "approved":
+                with patch.dict(os.environ, {"XDG_CONFIG_HOME": str(self.config)}):
+                    teaching.approve(directory)
         return directory
 
-    def run_hook(self, cwd=None, source="startup", raw=None):
+    def run_hook(self, cwd=None, source="startup", raw=None, config=True):
         payload = raw if raw is not None else json.dumps({
             "hook_event_name": "SessionStart", "source": source,
             "cwd": str(cwd or self.project),
         })
+        # The hook needs a Python executable and its plugin location, not the
+        # developer's credentials or unrelated environment configuration.
+        env = {
+            "PATH": os.pathsep.join((str(Path(sys.executable).parent), os.defpath)),
+            "CLAUDE_PLUGIN_ROOT": str(ROOT),
+        }
+        if config:
+            env["XDG_CONFIG_HOME"] = str(self.config)
         result = subprocess.run(
             REGISTRATION["hooks"][0]["command"], shell=True,
             input=payload, text=True, capture_output=True, timeout=5,
-            # The hook needs a Python executable and its plugin location, not the
-            # developer's credentials or unrelated environment configuration.
-            env={
-                "PATH": os.pathsep.join((str(Path(sys.executable).parent), os.defpath)),
-                "CLAUDE_PLUGIN_ROOT": str(ROOT),
-            }, cwd=self.root,
+            env=env, cwd=self.root,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stderr, "")
@@ -256,18 +270,81 @@ class SessionStartTests(unittest.TestCase):
         after = {p.name: p.read_bytes() for p in state.iterdir()}
         self.assertEqual(before, after)
 
-    def test_compaction_points_to_pending_decision_without_inventing_approval(self):
+    def test_compaction_points_to_pending_step_without_inventing_approval(self):
         state = self.state()
         with (state / "progress.md").open("a") as stream:
-            stream.write("## Pending decision\nUse SQLite. Awaiting Implement or a question.\n"
-                         "- Pending decision: JSON storage; waiting for Implement.\n")
+            stream.write("## Pending step\nApply: use SQLite. Awaiting approval or a question.\n"
+                         "## Pending decision\nJSON storage; waiting for Implement.\n")
         context = self.context(source="compact")
-        self.assertIn("Search the entire progress.md for pending decisions", context)
-        self.assertIn("before coding", context)
-        self.assertIn("await implementation approval", context)
+        self.assertIn("Search the entire progress.md for pending steps", context)
+        self.assertIn("## Pending decision in older notes", context)
+        self.assertIn("Restore that step before coding", context)
+        self.assertIn("may still await the learner's approval", context)
         self.assertIn("Restarting or compacting is not approval", context)
-        self.assertNotIn("Use SQLite", context)
+        self.assertNotIn("use SQLite", context)
         self.assertNotIn("JSON storage", context)
+
+    def test_missing_teaching_finishes_setup(self):
+        self.state()
+        context = self.context()
+        self.assertIn("teaching.md is missing", context)
+        self.assertIn("finish setup from the first unanswered round", context)
+        self.assertIn(str(ROOT / "skills/learn/SKILL.md"), context)
+        self.assertNotIn("approve --state", context)
+
+    def test_unapproved_teaching_is_shown_not_followed(self):
+        state = self.state(teaching_file="draft")
+        context = self.context()
+        self.assertIn("has not approved its current content", context)
+        self.assertIn(str(ROOT / "skills/learn/core.md"), context)
+        self.assertIn(str(state / "teaching.md"), context)
+        self.assertIn("Use it / Ignore it", context)
+        self.assertIn(f'approve --state "{state}"', context)
+        self.assertNotIn("Private loop text", context)
+
+    def test_approved_teaching_is_followed(self):
+        state = self.state(teaching_file="approved")
+        context = self.context()
+        self.assertIn("this project's teaching file, and follow them together", context)
+        self.assertIn(str(ROOT / "skills/learn/core.md"), context)
+        self.assertIn(str(state / "teaching.md"), context)
+        self.assertNotIn("Ignore it", context)
+        self.assertNotIn("Private loop text", context)
+
+    def test_edited_teaching_needs_approval_again(self):
+        state = self.state(teaching_file="approved")
+        with (state / "teaching.md").open("a") as stream:
+            stream.write("One more line.\n")
+        self.assertIn("has not approved its current content", self.context())
+
+    def test_symlinked_teaching_is_never_trusted(self):
+        state = self.state(teaching_file="approved")
+        outside = self.root / "outside-teaching.md"
+        outside.write_bytes((state / "teaching.md").read_bytes())
+        (state / "teaching.md").unlink()
+        (state / "teaching.md").symlink_to(outside)
+        self.assertIn("has not approved its current content", self.context())
+
+    def test_symlinked_approvals_file_is_never_trusted(self):
+        self.state(teaching_file="approved")
+        approvals = self.config / "learning" / "approved.json"
+        outside = self.root / "outside-approved.json"
+        outside.write_bytes(approvals.read_bytes())
+        approvals.unlink()
+        approvals.symlink_to(outside)
+        self.assertIn("has not approved its current content", self.context())
+
+    def test_hook_never_writes_approvals(self):
+        self.state(teaching_file="draft")
+        self.context()
+        self.assertFalse(self.config.exists())
+
+    def test_hook_without_config_location_still_restores(self):
+        state = self.state(teaching_file="draft")
+        context = self.run_hook(config=False)["hookSpecificOutput"]["additionalContext"]
+        self.assertIn("Learning mode is active", context)
+        self.assertIn("has not approved its current content", context)
+        self.assertIn(str(state / "teaching.md"), context)
 
 
 if __name__ == "__main__":

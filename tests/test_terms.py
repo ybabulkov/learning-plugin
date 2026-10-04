@@ -178,7 +178,8 @@ class SessionStartQuizTests(unittest.TestCase):
             command, shell=True, text=True, capture_output=True, timeout=5,
             input=json.dumps({"hook_event_name": "SessionStart", "source": "startup", "cwd": str(self.project)}),
             env={"PATH": os.pathsep.join((str(Path(sys.executable).parent), os.defpath)),
-                 "CLAUDE_PLUGIN_ROOT": str(ROOT)},
+                 "CLAUDE_PLUGIN_ROOT": str(ROOT),
+                 "XDG_CONFIG_HOME": str(Path(self.temp.name) / "config")},
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         return json.loads(result.stdout)["hookSpecificOutput"]["additionalContext"]
@@ -195,6 +196,7 @@ class SessionStartQuizTests(unittest.TestCase):
         context = self.context()
         self.assertIn("Term quiz: 1 term(s)", context)
         self.assertIn(str(ROOT / "skills/learn/terms.md"), context)
+        self.assertIn("Follow the Quizzes section of an approved teaching.md", context)
         self.assertNotIn("About alpha", context)
 
     def test_no_note_when_already_quizzed_today_or_no_registry(self):
