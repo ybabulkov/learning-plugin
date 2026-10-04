@@ -1,7 +1,8 @@
 # Development
 
 V1 uses Claude Code skills, Markdown instructions, one read-only Python hook,
-and a small Python helper for confirmed learning resets.
+a small Python helper for confirmed learning resets, and an approval helper for
+teaching.md files.
 There are no packages to install. Python 3.8+ is sufficient for the hook and tests.
 
 ## Local checks
@@ -69,8 +70,8 @@ For a manual walkthrough based on the playground notes app, see the
    explain and proceed to a Design checkpoint without demanding another attempt. “Just
    implement it” should proceed. Make a trivial edit and confirm no checkpoint. After demonstrating
    a concept, check that later questions address new decisions rather than repeat it.
-5. **Lifecycle:** Restart, resume, `/clear`, and `/compact`. Confirm preferences,
-   the map, and mastered concepts survive without repeated onboarding. Pause
+5. **Lifecycle:** Restart, resume, `/clear`, and `/compact`. Confirm `teaching.md`,
+   the map, and mastered concepts survive without repeating setup. Pause
    learning, restart, and confirm it stays paused; invoke Learn to resume.
 6. **Guided foundations:** With a beginner profile and a new project, check that
    essential capabilities are established and preserved when selecting a platform;
@@ -125,7 +126,7 @@ For a manual walkthrough based on the playground notes app, see the
     background and question depth should adapt, while every level still reasons
     before suggestions. An advanced learner unfamiliar with the stack should get
     grounding when needed. Existing Some experience / Comfortable profiles should
-    resume with intermediate guidance, without rewriting history or re-onboarding.
+    resume with intermediate guidance, without rewriting history or re-asking experience.
     Experience must not change the saved Pace in `teaching.md`.
 
 12. **Evaluation and concise confirmation:** Give a confident but flawed proposal;
@@ -141,7 +142,8 @@ For a manual walkthrough based on the playground notes app, see the
     asks Cancel / Reset learning. Cancel must leave all files unchanged. Invoke
     again and confirm: original notes must exist in the reported backup, the
     active profile must be incomplete, `teaching.md` must be gone (its original in
-    the backup), and setup must start again at round 1 rather than reuse old answers. Repeat with legacy notes and after restart.
+    the backup), and setup must start again at round 1 rather than reuse old answers.
+    Repeat with legacy notes and after restart.
     If notes change during confirmation, Claude must preview and confirm again.
 
 14. **Requirements versus design:** Give a product requirement without proposing

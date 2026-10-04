@@ -300,6 +300,7 @@ class SessionStartTests(unittest.TestCase):
         self.assertIn(str(ROOT / "skills/learn/core.md"), context)
         self.assertIn(str(state / "teaching.md"), context)
         self.assertIn("Use it / Ignore it", context)
+        self.assertIn("If teaching.md is a symlink, don't read or show it", context)
         self.assertIn(f"approve --state {shlex.quote(str(state))}", context)
         self.assertNotIn("Private loop text", context)
 

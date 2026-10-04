@@ -76,6 +76,14 @@ class TemplateTests(unittest.TestCase):
         self.assertIn("## Pending step", text)
         self.assertNotIn("## Pending decision", text)
 
+    def test_design_first_notes_name_the_confirmations(self):
+        match = re.search(r"^### Design first\n(.*?)(?=^###|\Z)",
+                          read("state-templates.md"), re.M | re.S)
+        self.assertTrue(match, "no Design first preset")
+        notes = " ".join(match.group(1).split())
+        self.assertIn("Confirm and continue", notes)
+        self.assertIn("Implement this step", notes)
+
 
 class CoreTests(unittest.TestCase):
     def test_core_rules_cover_every_loop_invariant(self):
@@ -86,6 +94,15 @@ class CoreTests(unittest.TestCase):
             with self.subTest(heading=heading):
                 self.assertRegex(text, rf"(?m)^## {heading}$")
         self.assertIn("this file wins", text)
+
+    def test_core_keeps_teaching_behaviors(self):
+        raw = read("core.md")
+        text = " ".join(raw.split())
+        for phrase in ("Proposed additions", "Detail / Proposal / Why it matters",
+                       "Reports need no question", "a brief answer as being stuck"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, text)
+        self.assertRegex(raw, r"(?m)^## Explanations$")
 
 
 QUESTIONS = [

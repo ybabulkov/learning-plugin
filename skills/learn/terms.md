@@ -9,7 +9,7 @@ Never edit `terms.json` by hand: run `terms.py` (next to this file) so counts an
 dates stay exact. `<state>` is the project's `.learning/` directory (or a legacy `.vibe-wise/` or `.sensible-vibes/`).
 
 ```
-python3 <this directory>/terms.py --state <state> <command> ...
+python3 '<this directory>/terms.py' --state '<state>' <command> ...
 ```
 
 ## What counts as a term

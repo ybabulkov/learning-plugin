@@ -39,9 +39,9 @@ None recorded yet.
 ```
 
 While setup is unfinished, use `Onboarding: incomplete` and keep a
-`## Setup answers` section with one line per answered question, plus a
-`Remaining setup:` line naming the unanswered rounds. Remove both when setup is
-saved.
+`## Setup answers` section with one line per answered question (a custom loop may
+take several lines), plus a `Remaining setup:` line naming the unanswered rounds.
+Remove both when setup is saved.
 
 ## progress.md
 
@@ -109,7 +109,6 @@ learner's words.]
 ## Learning loop
 [Preset name, or Custom]
 [Numbered steps and the notes under them, copied from the chosen preset below, or the custom loop]
-Repeat for each [piece / concept / area].
 
 ## Explaining
 [Example first / Concept first / Diagram first / Mix, plus any detail given]
@@ -156,7 +155,11 @@ For architecture and system design.
 
 Repeat for each piece. Several Build checkpoints may lead to one confirmation. When
 ready to code, the Implementation checkpoint also confirms the design; skip a
-separate Design checkpoint.
+separate Design checkpoint. The Design checkpoint offers **Confirm and continue**
+("This approach makes sense to me; move to the next piece.") next to **Discuss**
+("Ask questions or clarify anything that doesn't make sense before deciding."). The
+Implementation checkpoint offers **Implement this step** ("This approach makes
+sense to me; write the code for this step.") next to **Discuss**.
 
 ### Practice first
 For a new language or library.

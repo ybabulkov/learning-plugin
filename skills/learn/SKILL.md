@@ -57,7 +57,8 @@ issue instead.
      `python3 '<this directory>/teaching.py' approve --state '<state directory>'`)
      or **Ignore it** (follow core.md with the Design first loop from
      [state-templates.md](state-templates.md) for this session; the next session
-     asks again).
+     asks again). If `teaching.md` is a symlink, don't read or show it: tell the
+     learner it was refused and use the Ignore it fallback.
 6. Restore any pending step before new work. Then continue the learner's task, or
    ask what they want to build or change.
 
@@ -138,6 +139,11 @@ One screen with three questions:
 - "When should I quiz you?" Start of each session / After explainer pages / Only when I ask / Never
 
 For "I'll list them", ask in chat which kinds of terms to explain and which to skip.
+Write the Terms section from the answer: Language and library specifics → Explain:
+the language's syntax, standard library and framework APIs; Skip: general
+programming basics and general CS terms. Also general concepts → the same, plus
+general concepts such as HTTP or SQL under Explain. Everything new → Explain:
+anything new to the learner; Skip: nothing.
 
 ### Round 6: Review
 
@@ -172,9 +178,9 @@ says. Show the whole file in chat, then ask
 
 If the learner wants to skip setup at any point, fill every unanswered choice with a
 default: Design first, Mix, Normal, Open-ended, Claude, A hint, Language and library
-specifics, Start of each session. Unknown project and experience answers become "Not
-specified". Mark each default `(default, not chosen)` in `teaching.md` and still
-show round 6.
+specifics, Start of each session. Unknown project, experience and What I'm learning
+answers become "Not specified". Mark each default `(default, not chosen)` in
+`teaching.md` and still show round 6.
 
 ## Existing projects
 

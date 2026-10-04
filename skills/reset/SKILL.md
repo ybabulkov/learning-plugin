@@ -1,6 +1,6 @@
 ---
 name: reset
-description: Back up this project's learning notes and restart onboarding after confirmation. Does not reset application code.
+description: Back up this project's learning notes and restart setup after confirmation. Does not reset application code.
 disable-model-invocation: true
 ---
 
@@ -27,7 +27,7 @@ installation stay intact.
    and that originals will be saved under that state's `backups/` directory.
    Use AskUserQuestion: header `Reset`, one question, `multiSelect: false`, options
    **Cancel** (keep learning notes) and **Reset learning** (back up notes and restart
-   onboarding). Ask whether to reset learning for the named project. If the picker
+   setup). Ask whether to reset learning for the named project. If the picker
    is unavailable, ask the same question in text. Wait for an explicit answer.
    Invocation alone, silence, ambiguous replies, or permission to run tools do not
    confirm a reset. Cancel makes no changes, including to learner notes.
@@ -40,7 +40,7 @@ installation stay intact.
    ```
 
    If the target or notes changed, preview again and get new confirmation. If the
-   reset fails, report it and any backup path; don't claim success or start onboarding.
+   reset fails, report it and any backup path; don't claim success or start setup.
    Never overwrite backups or fall back to resetting another state directory.
 
 4. On success, show the backup path. Read `${CLAUDE_PLUGIN_ROOT}/skills/learn/SKILL.md` and resume Learn with

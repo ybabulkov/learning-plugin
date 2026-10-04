@@ -30,14 +30,15 @@ approve its exact content, so a repository you clone can't bring its own.
 
 HTML explanations get hover tooltips for terms and syntax. Each term is explained on
 at most 3 pages, tracked in `.learning/terms.json`, then joins spaced-repetition
-quizzes: a right answer schedules the next one in 1, 3, 7, 21, then 60 days; a miss
-resets it to 1 day.
+quizzes (when your Quizzes setting allows them): a right answer schedules the next
+one in 1, 3, 7, 21, then 60 days; a miss resets it to 1 day.
 
 ## Get started
 
 You need [Claude Code](https://code.claude.com/docs/en/setup) and
 [Python 3](https://www.python.org/downloads/). The plugin uses Python to restore
-learning context and reset learning notes. No extra Python packages are needed.
+learning context, record which `teaching.md` files you approved, and reset learning
+notes. No extra Python packages are needed.
 
 Clone this repository, then run these commands **one at a time** in Claude Code.
 First, add your clone as a marketplace:
@@ -175,8 +176,9 @@ Implement this step.
 
 You don't need to know the answer already. Claude can explain unfamiliar concepts, sketch the relevant pieces, and help you tackle a smaller question. You stay involved in forming the plan. Answer in plain English; ask for more help or say “skip” whenever you want.
 
-Describing what you want sets the requirements. Build Checkpoints ask you to work
-out how it should function; a feature preference doesn't approve an architecture.
+In the Design first loop, describing what you want sets the requirements. Build
+Checkpoints ask you to work out how it should function; a feature preference
+doesn't approve an architecture.
 
 | Checkpoint | What happens |
 | --- | --- |
@@ -223,7 +225,7 @@ and asks you to save it before editing `teaching.md`.
 
 Your `teaching.md`, learning notes, and a project map live in `.learning/` in your project. Projects set up with an older version keep their `.vibe-wise/` or `.sensible-vibes/` folder; the first session after updating (or `/learning:learn`) walks you through setup rounds 3–6, with your old answers pre-selected. Learning mode resumes in future sessions and after compaction. Add `.learning/` to your `.gitignore` to keep your notes out of Git; the plugin won't change it silently.
 
-No extra account, backend, or telemetry. Saved notes are included in Claude's context, so your normal Claude Code data settings still apply.
+No extra account, backend, or telemetry. Saved notes are included in Claude's context, so your normal Claude Code data settings still apply. Approvals of `teaching.md` files are kept outside your projects in `~/.config/learning/approved.json` (or `$XDG_CONFIG_HOME/learning/`); delete an entry to make Claude ask again.
 
 To start learning this project from scratch, run `/learning:reset`. It shows the
 project and asks **Cancel / Reset learning**. After confirmation, it backs up your
