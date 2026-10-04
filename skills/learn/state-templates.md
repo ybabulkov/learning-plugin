@@ -1,10 +1,14 @@
 # Local state templates
 
-Create only these three files in the chosen project's `.vibe-wise/`, or its existing
-legacy `.sensible-vibes/` when resuming. Use the directory selected by SKILL.md.
+Create only these three files in the chosen project's `.learning/`, or its existing
+legacy `.vibe-wise/` or `.sensible-vibes/` when resuming. Use the directory selected by SKILL.md.
 Replace bracketed values with actual evidence or “Not specified.” Keep the two
 status lines unformatted and near the top; the restoration hook reads them.
 Do not replace existing state with a fresh template.
+A fourth file, `terms.json`, is created and changed only by `terms.py` (see terms.md);
+never write it from a template or by hand. An optional fifth, `term-scope.md`, holds
+the learner's rules for which terms to explain in this project; terms.md says when to
+create it.
 
 ## profile.md
 

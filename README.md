@@ -1,6 +1,6 @@
-<img src=".claude-plugin/icon.svg" alt="VibeWise brain with code brackets" width="96" height="96">
+<img src=".claude-plugin/icon.svg" alt="Brain with code brackets" width="96" height="96">
 
-# VibeWise
+# Learning
 
 **You build. AI writes.**
 
@@ -8,35 +8,39 @@ A Claude Code plugin that puts learning first and keeps you in control while AI 
 
 For anyone who wants to learn as they build—whether you're an aspiring engineer, a junior developer, or an experienced engineer exploring an unfamiliar stack. Practice planning how the pieces fit together, anticipating failures, and checking the result while keeping ownership of the decisions.
 
+## Fork additions: term tooltips and quizzes
+
+This fork (branch `terms-and-quizzes`, marketplace `learning`) adds:
+
+- **Hover tooltips in HTML explanations.** Terms and language syntax in code panels and captions get a dotted underline; hover, focus or tap shows the explanation. `skills/learn/assets/term-tooltips.js` is inlined into each page.
+- **A showing limit.** Each term is explained on at most 3 pages, tracked in `.learning/terms.json` by `skills/learn/terms.py`.
+- **Spaced-repetition quizzes** on terms already shown: at session start (the SessionStart hook reports how many are due) and after every second explainer page. A right answer schedules the next quiz in 1, 3, 7, 21, then 60 days; a miss resets to 1 day.
+
+Rules for Claude live in `skills/learn/terms.md`.
+
 ## Get started
 
 You need [Claude Code](https://code.claude.com/docs/en/setup) and
-[Python 3](https://www.python.org/downloads/). VibeWise uses Python to restore
+[Python 3](https://www.python.org/downloads/). The plugin uses Python to restore
 learning context and reset learning notes. No extra Python packages are needed.
 
-VibeWise has been approved for Anthropic's Claude directory, but isn't listed in
-the public community marketplace yet. I expect it to appear soon. In the meantime,
-install it in Claude Code through my GitHub marketplace:
-
-Run these commands **one at a time** in Claude Code. First, add the marketplace:
+Clone this repository, then run these commands **one at a time** in Claude Code.
+First, add your clone as a marketplace:
 
 ```text
-/plugin marketplace add nykooi1/vibe-wise
+/plugin marketplace add /path/to/your/clone
 ```
 
 After it finishes, install the plugin:
 
 ```text
-/plugin install vibe-wise@vibe-wise
+/plugin install learning@learning
 ```
-
-**Enable automatic updates:** open `/plugin` → **Marketplaces** → **vibe-wise** →
-**Enable auto-update**. This is off by default for third-party marketplaces.
 
 Restart Claude Code in the project you want to work on, then run:
 
 ```text
-/vibe-wise:learn
+/learning:learn
 ```
 
 Setup asks one question at a time. Use the arrow keys and Enter for choices; pick **Use defaults** to skip preference setup. Then ask Claude to build something. Starting fresh or joining an unfamiliar repository both work. For an existing repository, Claude first inspects the code and sketches a small system map.
@@ -196,13 +200,13 @@ are with the stack. Checkpoint frequency—Light, Normal, or Frequent—is separ
 - “Focus on backend architecture.”
 - “Use multiple-choice questions.”
 - “Just implement this one.”
-- “Pause learning.” Resume with `/vibe-wise:learn`.
+- “Pause learning.” Resume with `/learning:learn`.
 
-Preferences, learning notes, and a project map live in `.vibe-wise/` in your project. Learning mode resumes in future sessions and after compaction. Add `.vibe-wise/` to your `.gitignore` to keep your notes out of Git; the plugin won't change it silently.
+Preferences, learning notes, and a project map live in `.learning/` in your project. Learning mode resumes in future sessions and after compaction. Add `.learning/` to your `.gitignore` to keep your notes out of Git; the plugin won't change it silently.
 
 No extra account, backend, or telemetry. Saved notes are included in Claude's context, so your normal Claude Code data settings still apply.
 
-To start learning this project from scratch, run `/vibe-wise:reset`. It shows the
+To start learning this project from scratch, run `/learning:reset`. It shows the
 project and asks **Cancel / Reset learning**. After confirmation, it backs up your
 profile, progress, and project map inside the notes directory's `backups/` folder,
 then restarts onboarding. Source code and other projects stay untouched. To change
@@ -210,15 +214,11 @@ your experience level or preferences, just tell Claude; no reset is needed.
 
 ## Updating
 
-For automatic updates, open `/plugin` → **Marketplaces** → **vibe-wise** →
-**Enable auto-update**. Auto-update is off by default for third-party marketplaces.
-Claude Code notifies you after an update; restart Claude Code to load the new version.
-
-To update manually, run these in your terminal:
+After pulling new changes into your clone, run these in your terminal:
 
 ```sh
-claude plugin marketplace update vibe-wise
-claude plugin update vibe-wise@vibe-wise
+claude plugin marketplace update learning
+claude plugin update learning@learning
 ```
 
 Then restart Claude Code. Your project learning notes stay intact; no reset is needed.

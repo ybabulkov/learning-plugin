@@ -6,8 +6,8 @@ are paraphrased examples; Claude's wording and question order will vary.
 
 ## Start a fresh recording
 
-Install VibeWise using the README instructions. Open a new, empty folder in your
-terminal and start `claude`, then enter `/vibe-wise:learn`. Choose **New project**,
+Install the plugin using the README instructions. Open a new, empty folder in your
+terminal and start `claude`, then enter `/learning:learn`. Choose **New project**,
 describe a Notion-style notes app, choose **Beginner**, then **Use defaults**.
 Stack familiarity can wait until you choose a stack. No `git init` is needed.
 
@@ -32,7 +32,7 @@ it without authorizing code. Once the remaining choices for a concrete step are
 resolved, choose **Implement this step**. Expect a report explaining changes,
 reasoning, tests written, and checks actually run.
 
-For another take, use another empty folder. `/vibe-wise:reset` resets learning
+For another take, use another empty folder. `/learning:reset` resets learning
 notes but keeps application code, so it isn't a clean-project reset.
 
 ## What to check

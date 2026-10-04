@@ -42,7 +42,7 @@ def state_directory(cwd):
     # Starting in a source subdirectory should still find the project's notes.
     for directory in (cwd, *cwd.parents):
         # Prefer the new name at the nearest location; keep legacy notes in place.
-        for name in (".vibe-wise", ".sensible-vibes"):
+        for name in (".learning", ".vibe-wise", ".sensible-vibes"):
             state = directory / name
             if state.exists() or state.is_symlink():
                 # Stop even if this candidate is invalid. Falling back to a parent
@@ -52,6 +52,26 @@ def state_directory(cwd):
         if (directory / ".git").exists():
             break
     return None
+
+
+def quiz_due(state):
+    """Count terms due for a quiz, or None. Never copies term content into context."""
+    registry = state / "terms.json"
+    if registry.is_symlink() or not registry.is_file():
+        return None
+    try:
+        sys.path.insert(0, str(PLUGIN_ROOT / "skills/learn"))
+        try:
+            import terms
+        finally:
+            sys.path.pop(0)
+        summary = terms.session_summary(registry)
+    except Exception:
+        # A damaged registry must never stop a session from starting.
+        return None
+    if summary["quizzed_today"] or not summary["due"]:
+        return None
+    return summary["due"]
 
 
 def restore(payload):
@@ -77,7 +97,7 @@ def restore(payload):
     # Bootstrap from source files instead of emitting partial notes or an incomplete
     # topic index. Output size is independent of the amount of learning history.
     context = (
-        "VibeWise is active for this project. Before responding or coding, use Read "
+        "Learning mode is active for this project. Before responding or coding, use Read "
         "to load the Learn guide and its referenced behavior instructions:\n"
         f"{PLUGIN_ROOT / 'skills/learn/SKILL.md'}\n\n"
         f"State directory: {state}\n"
@@ -92,6 +112,14 @@ def restore(payload):
         "questions; do not repeat completed onboarding. If the profile is now "
         "paused, keep it paused: this hook is not an explicit Learn invocation."
     )
+    quiz = quiz_due(state)
+    if quiz:
+        context += (
+            f"\n\nTerm quiz: {quiz} term(s) the learner was shown are due for review "
+            "and no quiz has run today. Read "
+            f"{PLUGIN_ROOT / 'skills/learn/terms.md'} and run a short quiz in your "
+            "first reply, before starting new work, unless the learner asks to skip."
+        )
     # Claude Code adds additionalContext to the model's context. These are reading
     # instructions for Claude; the hook itself hasn't loaded the map or progress.
     return {"hookSpecificOutput": {

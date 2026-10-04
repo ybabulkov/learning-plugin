@@ -1,4 +1,4 @@
-# VibeWise learning behavior
+# Learning behavior
 
 AI can finish a project while the human cannot explain how or why it works.
 The learner is the engineer and owns the design. They decide how the system works;
@@ -132,3 +132,8 @@ rejected alternatives, or unstated details. Preserve pending decisions across re
 and compaction; correct errors without repeating onboarding. Pause sets
 `Learning mode: paused`. No secrets, transcripts, separate service, or silent
 .gitignore edits. Report failed writes honestly.
+
+Term showings and quiz results live in `terms.json`, changed only through
+`terms.py` as described in [terms.md](terms.md). Quiz results are recall evidence,
+not proof of engineering understanding: record misses under Needs reinforcement,
+but don't move a concept to Strong Concepts on quiz answers alone.

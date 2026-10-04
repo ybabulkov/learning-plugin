@@ -1,12 +1,12 @@
 {
-  "name": "vibe-wise",
-  "owner": { "name": "Noah Kim" },
+  "name": "learning",
+  "owner": { "name": "Noah Kim (fork: term tooltips and quizzes)" },
   "metadata": {
-    "description": "VibeWise: learn how to build while AI writes the code."
+    "description": "Learn how to build software while AI writes the code."
   },
   "plugins": [
     {
-      "name": "vibe-wise",
+      "name": "learning",
       "source": "./",
       "description": "Learn how to build software while Claude writes the code."
     }

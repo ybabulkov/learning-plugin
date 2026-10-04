@@ -12,14 +12,14 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "skills/reset/reset.py"
-spec = importlib.util.spec_from_file_location("vibe_wise_reset", SCRIPT)
+spec = importlib.util.spec_from_file_location("learning_reset", SCRIPT)
 reset_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(reset_module)
 
 
 class ResetTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix="vibe-wise-reset-")
+        self.temp = tempfile.TemporaryDirectory(prefix="learning-reset-")
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name).resolve()
         self.project = self.root / "project with spaces"
@@ -27,7 +27,7 @@ class ResetTests(unittest.TestCase):
         (self.project / ".git").mkdir()
 
     def notes(self, project=None, legacy=False):
-        state = (project or self.project) / (".sensible-vibes" if legacy else ".vibe-wise")
+        state = (project or self.project) / (".sensible-vibes" if legacy else ".learning")
         state.mkdir()
         originals = {
             "profile.md": b"Learning mode: paused\nOnboarding: complete\nAdvanced\n",
@@ -105,7 +105,7 @@ class ResetTests(unittest.TestCase):
         result = self.confirm(nested)
         self.assertEqual(result["state"], str(state))
         self.assert_originals(Path(result["backup"]), originals)
-        self.assertFalse((self.project / ".vibe-wise").exists())
+        self.assertFalse((self.project / ".learning").exists())
 
     def test_preferred_state_resets_without_touching_legacy(self):
         state, _ = self.notes()
@@ -132,7 +132,7 @@ class ResetTests(unittest.TestCase):
     def test_no_state_and_empty_state_do_not_create_files(self):
         self.assertEqual(self.preview()["status"], "no_notes")
         self.assertEqual(list(self.project.iterdir()), [self.project / ".git"])
-        state = self.project / ".vibe-wise"
+        state = self.project / ".learning"
         state.mkdir()
         self.assertEqual(self.preview()["status"], "no_notes")
         self.assertEqual(list(state.iterdir()), [])
@@ -171,7 +171,7 @@ class ResetTests(unittest.TestCase):
         outside = self.root / "outside"
         outside.mkdir()
         target, originals = self.notes(outside)
-        (self.project / ".vibe-wise").symlink_to(target, target_is_directory=True)
+        (self.project / ".learning").symlink_to(target, target_is_directory=True)
         self.assertEqual(self.preview()["status"], "no_notes")
         self.assert_originals(target, originals)
 

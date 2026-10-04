@@ -19,8 +19,8 @@ projects. They cover activation, restoration, partial onboarding, paused mode,
 subdirectories, repository/worktree boundaries, missing/invalid files, symlinks,
 constant-size restoration instructions as notes grow, and read-only behavior.
 They do not prove that Claude follows the instructions or teaches well.
-Rename coverage verifies that `.sensible-vibes/` notes restore without migration,
-`.vibe-wise/` takes precedence at the same location, and legacy lookup preserves
+Rename coverage verifies that `.vibe-wise/` and `.sensible-vibes/` notes restore without migration,
+`.learning/` takes precedence at the same location, and legacy lookup preserves
 repository boundaries, nearest-state selection, and symlink rejection.
 Reset tests cover read-only preview, confirmed backup/reset, stale confirmation,
 legacy and partial notes, nested projects, repeated backups, rejected symlinks,
@@ -29,12 +29,12 @@ backup/write failures, and restoring incomplete onboarding after reset.
 ## Conversation smoke tests
 
 Use an authenticated Claude Code session and temporary copies of projects.
-Launch with `claude --plugin-dir /absolute/path/to/vibe-wise`.
+Launch with `claude --plugin-dir /absolute/path/to/your/clone`.
 
 For a manual walkthrough based on the playground notes app, see the
 [Notion-style demo](demos/notion-dupe.md).
 
-1. **Fresh project:** Run `/vibe-wise:learn`. Choose a new project, describe
+1. **Fresh project:** Run `/learning:learn`. Choose a new project, describe
    a small CLI, and accept preference defaults. Check that all three state files
    are created, the map separates proposed from implemented components, and no
    understanding is marked demonstrated without evidence. Choice questions must
@@ -129,7 +129,7 @@ For a manual walkthrough based on the playground notes app, see the
     unresolved issue. No code should be written before implementation approval.
 
 13. **Reset:** In a temporary project with saved learning notes, invoke
-    `/vibe-wise:reset`. Confirm it shows the absolute project and state paths and
+    `/learning:reset`. Confirm it shows the absolute project and state paths and
     asks Cancel / Reset learning. Cancel must leave all files unchanged. Invoke
     again and confirm: original notes must exist in the reported backup, the
     active profile must be incomplete, and onboarding must ask fresh questions
@@ -171,7 +171,7 @@ For a manual walkthrough based on the playground notes app, see the
     inspect the notes: unmentioned fields, lifecycle behavior, alternatives, and
     rationale must remain unresolved, not appear as agreed design or learner reasoning.
 
-Do not commit `.vibe-wise/` or test transcripts. The plugin recommends an
+Do not commit `.learning/` or test transcripts. The plugin recommends an
 ignore rule during onboarding, but changes `.gitignore` only after telling the
 user and receiving their instruction to make the edit.
 
@@ -182,7 +182,7 @@ Verified against current first-party documentation on 2026-09-28:
 - [Plugin creation](https://code.claude.com/docs/en/plugins/create): standard
   component directories and `--plugin-dir` for local loading.
 - [Skills](https://code.claude.com/docs/en/skills): the command is
-  `/vibe-wise:learn`. Explicit invocation starts onboarding; the hook restores
+  `/learning:learn`. Explicit invocation starts onboarding; the hook restores
   behavior in later sessions only where a learner profile already exists.
 - [Hooks](https://code.claude.com/docs/en/hooks): `SessionStart` sources include
   `startup`, `resume`, `clear`, `compact`, and `fork`. The hook emits a small
@@ -196,7 +196,7 @@ Verified against current first-party documentation on 2026-09-28:
   the small catalog points to this repository's plugin root. The GitHub install
   instructions work after these files are published to the remote repository.
 - [Anthropic's learning-output-style plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/learning-output-style):
-  inspected its SessionStart configuration and context injection. VibeWise
+  inspected its SessionStart configuration and context injection. This plugin
   supplies its own reasoning-first instructions and leaves implementation to AI.
 
 No `PreCompact` hook is needed: it doesn't provide an opportunity for Claude to

@@ -1,5 +1,5 @@
 {
-  "description": "Restore local VibeWise learning context when a session starts or compacts.",
+  "description": "Restore local learning context when a session starts or compacts.",
   "hooks": {
     "SessionStart": [
       {
