@@ -117,6 +117,15 @@ class SkillTests(unittest.TestCase):
         self.assertIn("teaching.py' approve --state", text)
         self.assertIn("teaching.py' check --state", text)
 
+    def test_setup_keeps_notes_and_quiz_setting(self):
+        skill = " ".join(read("SKILL.md").split())
+        self.assertIn("never replace them with a template", skill)
+        step = re.search(r"^6\. If the output says.*?(?=\n\n)", read("terms.md"), re.M | re.S)
+        self.assertTrue(step, "terms.md step 6 not found")
+        step = " ".join(step.group(0).split())
+        self.assertIn("quiz_suggested", step)
+        self.assertIn("After explainer pages", step)
+
     def test_relative_links_in_skills_resolve(self):
         for guide in (ROOT / "skills").rglob("*.md"):
             for target in re.findall(r"\]\(([^)#:]+\.md)\)", guide.read_text(encoding="utf-8")):

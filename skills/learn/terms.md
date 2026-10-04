@@ -64,9 +64,10 @@ them; `define` keeps a term excluded.
    re-scanned automatically.
 5. **After publishing**, run `record-page --page <page-id> --title "<title>" --url <url> <ids...>`
    with the planned ids. Re-recording the same page never counts twice.
-6. If the output says `"quiz_suggested": true`, run a quiz after presenting the page
-   (see below). Terms first shown today are never due, so this can't quiz what the
-   page just explained.
+6. If the output says `"quiz_suggested": true` and the Quizzes section of the
+   approved `teaching.md` says After explainer pages (or there is no approved
+   `teaching.md`), run a quiz after presenting the page (see Quizzes below). Terms
+   first shown today are never due, so this can't quiz what the page just explained.
 
 ## Quizzes
 
