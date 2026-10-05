@@ -275,6 +275,13 @@ def main(argv=None):
     if state.is_symlink() or not state.is_dir():
         print(json.dumps({"error": f"not a state directory: {state}"}))
         return 2
+    # Standalone registries without a profile remain usable; an explicit Off
+    # profile blocks every command before any registry or definition is read.
+    from mode import profile_is_active
+    profile = state / "profile.md"
+    if (profile.exists() or profile.is_symlink()) and not profile_is_active(profile):
+        print(json.dumps({"error": "Learning is off for this project. Turn it on explicitly to use terms."}))
+        return 2
     path = state / "terms.json"
     today = day(args.today) if args.today else dt.date.today()
     try:

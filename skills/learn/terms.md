@@ -1,6 +1,9 @@
 # Terms, tooltips and quizzes
 
-Applies whenever learning mode is active.
+Applies only while learning mode is On. While Off, don't read this guide or the
+registry, add tooltips, record pages or run quizzes, even when an ordinary task
+includes an explanation. `terms.py` refuses commands for an Off profile. Only an
+explicit request to turn learning on reactivates this process.
 
 Every term or piece of syntax the learner meets in an HTML explanation is tracked in
 `<state>/terms.json`. A term is explained in a tooltip on at most 3 pages; after that

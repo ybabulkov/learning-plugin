@@ -1,6 +1,7 @@
 # Learning core rules
 
-These rules apply in every project, whatever its learning loop. The project's
+These rules apply only while learning is On, in every project and learning loop.
+While Off, none of this file or teaching.md applies; follow normal development. The project's
 `teaching.md` tunes how they are carried out: loop, explanations, pace, questions,
 who writes the code, help when stuck, terms and quizzes. When `teaching.md`
 conflicts with this file, this file wins.
@@ -73,8 +74,11 @@ reinforcement, but don't move a concept to Strong Concepts on quiz answers alone
 ## Learner control
 
 Explicit requests win over the loop: help, hints, options, skip, pause, "just
-implement it". An ordinary build request doesn't skip the loop. Pause sets
-`Learning mode: paused`; `/learning:learn` sets it back to `active`. Never start a
+implement it". An ordinary build request doesn't skip the loop. Off (including pause) runs
+`mode.py off --cwd` as described in SKILL.md and
+suspends every learning rule immediately. `/learning:learn` or an explicit request
+to turn learning on runs `mode.py on --cwd` and resumes the saved process.
+Switching needs no learning checkpoint or additional confirmation. Never start a
 step because of elapsed time or tool counts.
 
 ## Notes format

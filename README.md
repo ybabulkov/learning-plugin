@@ -33,6 +33,34 @@ at most 3 pages, tracked in `.learning/terms.json`, then joins spaced-repetition
 quizzes (when your Quizzes setting allows them): a right answer schedules the next
 one in 1, 3, 7, 21, then 60 days; a miss resets it to 1 day.
 
+## Learning On or Off
+
+Choose independently for each project:
+
+| Mode | Command | Behavior |
+| --- | --- | --- |
+| On | `/learning:learn` or `/learning:learn on` | Follow the full saved learning process. |
+| Off | `/learning:off` or `/learning:learn off` | Do the requested work with normal development behavior. |
+
+`/learning:learn status` reports the current mode without changing it. You can
+also say "turn learning off" or "turn learning on" in a learning conversation.
+Switching needs no extra confirmation and takes effect immediately.
+
+Off suspends all learning checkpoints, implementation approval gates, teaching
+style, explainer requirements, term tooltips, quizzes and progress tracking. The
+session hook emits no learning instructions, guides or notes while Off. Ordinary
+project instructions and tool permissions still apply. A build request or
+explanation doesn't turn learning back on.
+
+The mode persists through restarts, resume, compaction and forks. Learning notes,
+setup answers and teaching-file approvals are kept for when you turn it on again.
+An older `Learning mode: paused` marker also means Off. Newly installed projects
+start Off until you explicitly invoke Learn.
+
+Earlier messages stay in an existing chat. Start a fresh chat while Off to keep
+previously loaded learning guides and notes out of its context entirely. The
+installed commands remain available so you can turn learning on again.
+
 ## Get started
 
 You need [Claude Code](https://code.claude.com/docs/en/setup) and
@@ -221,7 +249,7 @@ and asks you to save it before editing `teaching.md`.
 - “Focus on backend architecture.”
 - “Use multiple-choice questions.”
 - “Just implement this one.”
-- “Pause learning.” Resume with `/learning:learn`.
+- “Turn learning off.” Resume with `/learning:learn`. “Pause learning” also turns it Off.
 
 Your `teaching.md`, learning notes, and a project map live in `.learning/` in your project. Projects set up with an older version keep their `.vibe-wise/` or `.sensible-vibes/` folder; the first session after updating (or `/learning:learn`) walks you through setup rounds 3–6, with your old answers pre-selected. Learning mode resumes in future sessions and after compaction. Add `.learning/` to your `.gitignore` to keep your notes out of Git; the plugin won't change it silently.
 

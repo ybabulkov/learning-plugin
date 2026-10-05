@@ -1,8 +1,8 @@
 # Development
 
 V1 uses Claude Code skills, Markdown instructions, one read-only Python hook,
-a small Python helper for confirmed learning resets, and an approval helper for
-teaching.md files.
+a small Python helper for confirmed learning resets, an approval helper for
+teaching.md files, and a project mode helper.
 There are no packages to install. Python 3.8+ is sufficient for the hook and tests.
 
 ## Local checks
@@ -31,6 +31,12 @@ Teaching tests cover approval, edits, symlinks, unreadable or misplaced approval
 files, moved projects, a missing home folder, and each session-start branch.
 Guide tests pin the `teaching.md` headings, the loop presets' rules, the core
 sections, the setup questions, and links between guides.
+
+Mode tests verify On/Off switching, read-only status, note and profile-byte
+preservation, both legacy state names, Git/worktree boundaries, linked-path
+refusal, failed-write cleanup, silent Off hooks for every session lifecycle, and
+blocking all term commands before reading a registry while Off. The Learn entry
+point checks the mode before loading `core.md` or `setup.md`.
 
 ## Conversation smoke tests
 
@@ -72,7 +78,11 @@ For a manual walkthrough based on the playground notes app, see the
    a concept, check that later questions address new decisions rather than repeat it.
 5. **Lifecycle:** Restart, resume, `/clear`, and `/compact`. Confirm `teaching.md`,
    the map, and mastered concepts survive without repeating setup. Pause
-   learning, restart, and confirm it stays paused; invoke Learn to resume.
+   learning with `/learning:off`, restart, and confirm no teaching guides, notes,
+   pending checkpoints, quizzes or learning callouts load. Ask for a feature and
+   confirm normal implementation behavior; saved learning files must remain
+   unchanged. `/learning:learn status` must not reactivate it. Invoke Learn to
+   resume the saved process, reconciling pending steps against work done while Off.
 6. **Guided foundations:** With a beginner profile and a new project, check that
    essential capabilities are established and preserved when selecting a platform;
    stack, storage, and deployment must remain visible open decisions. Ask what an

@@ -122,7 +122,7 @@ ROUNDS = ["Project", "You", "Learning loop", "Style", "Support", "Review"]
 
 class SkillTests(unittest.TestCase):
     def test_setup_has_six_rounds_and_every_question(self):
-        text = read("SKILL.md")
+        text = read("setup.md")
         for number, name in enumerate(ROUNDS, 1):
             self.assertIn(f"### Round {number}: {name}", text)
         for question in QUESTIONS:
@@ -130,12 +130,12 @@ class SkillTests(unittest.TestCase):
                 self.assertIn(question, text)
 
     def test_skill_uses_the_approval_helper(self):
-        text = read("SKILL.md")
+        text = read("setup.md")
         self.assertIn("teaching.py' approve --state", text)
         self.assertIn("teaching.py' check --state", text)
 
     def test_setup_keeps_notes_and_quiz_setting(self):
-        skill = " ".join(read("SKILL.md").split())
+        skill = " ".join(read("setup.md").split())
         self.assertIn("never replace them with a template", skill)
         step = re.search(r"^6\. If the output says.*?(?=\n\n)", read("terms.md"), re.M | re.S)
         self.assertTrue(step, "terms.md step 6 not found")

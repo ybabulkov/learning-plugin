@@ -10,7 +10,6 @@ configured in hooks.json.
 import importlib
 import json
 from pathlib import Path
-import re
 import shlex
 import sys
 
@@ -24,42 +23,10 @@ TEACHING_SCRIPT = LEARN / "teaching.py"
 TERMS_GUIDE = LEARN / "terms.md"
 
 
-def profile_is_active(path):
-    """Check activation without copying learner notes into hook output."""
-    # A linked profile could point outside the selected project's learning notes.
-    if path.is_symlink() or not path.is_file():
-        return False
-    has_content = False
-    try:
-        with path.open(encoding="utf-8") as stream:
-            # Scan the whole file: a paused marker can appear after a long profile.
-            # Reading line by line avoids loading all its contents into memory.
-            for line in stream:
-                has_content = has_content or bool(line.strip())
-                if re.fullmatch(r"Learning mode:\s*paused\s*", line, re.IGNORECASE):
-                    return False
-    except (OSError, UnicodeError):
-        # Missing, unreadable, or invalid text isn't evidence of active learning.
-        return False
-    # Older profiles may lack an explicit mode. Preserve their restoration behavior.
-    return has_content
-
-
-def state_directory(cwd):
-    """Find the nearest notes directory without crossing a Git project boundary."""
-    # Starting in a source subdirectory should still find the project's notes.
-    for directory in (cwd, *cwd.parents):
-        # Prefer the new name at the nearest location; keep legacy notes in place.
-        for name in (".learning", ".vibe-wise", ".sensible-vibes"):
-            state = directory / name
-            if state.exists() or state.is_symlink():
-                # Stop even if this candidate is invalid. Falling back to a parent
-                # could silently load a different project's learner profile.
-                return state if state.is_dir() and not state.is_symlink() else None
-        # A .git file is a worktree boundary too. Never borrow another repo's state.
-        if (directory / ".git").exists():
-            break
-    return None
+# Re-export lookup for reset.py while sharing exactly the same mode check.
+sys.path.insert(0, str(LEARN))
+from mode import profile_is_active, state_directory
+sys.path.pop(0)
 
 
 def learn_module(name):
@@ -100,7 +67,7 @@ def teaching_instructions(state, status):
     teaching = state / "teaching.md"
     if status == "approved":
         return (
-            "Before responding or coding, use Read to load the Learn guide, the core "
+            "First use Read to load the Learn guide and check the saved mode. Only while On, load the core "
             "rules and this project's teaching file, and follow them together:\n"
             f"{SKILL}\n{CORE}\n{teaching}"
         )
@@ -141,7 +108,7 @@ def restore_instructions(state):
         "Recreate missing notes only from evidence. "
         "If onboarding is incomplete, follow the guide and ask only unanswered "
         "questions; do not repeat completed onboarding. If the profile is now "
-        "paused, keep it paused: this hook is not an explicit Learn invocation."
+        "off or paused, keep learning Off: this hook is not an explicit Learn invocation."
     )
 
 

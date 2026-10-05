@@ -1,6 +1,6 @@
 {
   "name": "learning",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "You build. AI writes. Learn how to build software while Claude writes the code.",
   "author": { "name": "Noah Kim" },
   "license": "MIT",
